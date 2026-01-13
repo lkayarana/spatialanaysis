@@ -117,6 +117,13 @@ def main():
 
     # Load positions
     pos = pd.read_parquet(pos_path)
+    # Pick coordinate columns (10x often uses pxl_* instead of x/y)
+    XCOL = "pxl_col_in_fullres"
+    YCOL = "pxl_row_in_fullres"
+    
+    # 10x column for tissue membership
+    TISSUECOL = "in_tissue"
+
     # Expect columns: barcode, x, y, tissue (as you saw)
     pos = pos.set_index("barcode")
     pos = pos.loc[barcodes]  # align
@@ -152,7 +159,7 @@ def main():
     is_tumor = tumor_score > thr
 
     # Distances and periphery (<=50um from any tumor bin)
-    xy = pos[["pxl_col_in_fullres", "pxl_row_in_fullres"]].values.astype(float)
+    xy = pos[[XCOL, YCOL]].values.astype(float)
     tumor_xy = xy[is_tumor]
     tree = cKDTree(tumor_xy)
     dist, _ = tree.query(xy, k=1)
@@ -181,9 +188,9 @@ def main():
     df_bins = pd.DataFrame(
         {
             "barcode": barcodes,
-            "x": pos["x"].values,
-            "y": pos["y"].values,
-            "in_tissue": pos["in_tissue"].astype(bool).values,
+            "x": pos[XCOL].values,
+            "y": pos[YCOL].values,
+            "in_tissue": pos[TISSUECOL].astype(bool).values,
             "tumor_score": tumor_score,
             "is_tumor": is_tumor,
             "dist_to_tumor_um": dist,
