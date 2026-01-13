@@ -152,7 +152,7 @@ def main():
     is_tumor = tumor_score > thr
 
     # Distances and periphery (<=50um from any tumor bin)
-    xy = pos[["x", "y"]].values.astype(float)
+    xy = pos[["pxl_col_in_fullres", "pxl_row_in_fullres"]].values.astype(float)
     tumor_xy = xy[is_tumor]
     tree = cKDTree(tumor_xy)
     dist, _ = tree.query(xy, k=1)
@@ -183,7 +183,7 @@ def main():
             "barcode": barcodes,
             "x": pos["x"].values,
             "y": pos["y"].values,
-            "in_tissue": pos["tissue"].astype(bool).values,
+            "in_tissue": pos["in_tissue"].astype(bool).values,
             "tumor_score": tumor_score,
             "is_tumor": is_tumor,
             "dist_to_tumor_um": dist,
