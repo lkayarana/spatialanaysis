@@ -1,0 +1,11 @@
+# outputs / large analysis artifacts
+outputs/
+**/*.h5
+**/*.h5ad
+**/*.loom
+**/*.bam
+**/*.bai
+**/*.fastq
+**/*.fastq.gz
+**/*.tar
+**/*.tar.gz
